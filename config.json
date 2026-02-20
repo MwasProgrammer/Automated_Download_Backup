@@ -4,7 +4,9 @@
     "description": "A project to automate the backup of downloaded files from the internal local drive C to the external backup drive.",
     "source_settings": {
         "target_directory_name": "Downloads",
-        "use_envs_vars": true
+        "use_envs_vars": true,
+        "sandbox_mode": true,  
+        "target_directory_path":"tests/sandbox/downloads"
     },
 
     "backup_target": {
@@ -14,7 +16,7 @@
     },
 
     "safety_measures": {
-        "forbidden_extenstions": [".crdownload", ".tmp", ".part"],
+        "forbidden_extensions": [".crdownload", ".tmp", ".part"],
         "atomic_suffix": ".transferring"
     }
 
