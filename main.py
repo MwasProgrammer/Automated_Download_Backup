@@ -16,11 +16,11 @@ def main():
     print("Loading configuration...")
 
     try:
-        configuration = load_config()
+        configuration = load_config() # Load configuration from config.json
         print(f"Configuration loaded successfully: {configuration ['project_name']} version {configuration ['version']}")
     
         print("Discovering source path...")
-        source_path =get_source_path(configuration)
+        source_path =get_source_path(configuration) # Get the source path for user downloads based on the configuration settings
 
         if os.path.exists(source_path):
             print(f"Source path discovered: {source_path}")
@@ -30,7 +30,7 @@ def main():
         print("Scanning downloads folder for files ready for backup...")
         ready_files_for_backup = scan_downloads_files(source_path, configuration)
         print(f"Found {len(ready_files_for_backup)} files ready for backup.")
-
+  
         # View files ready for backup (top 3 files and bottom 3 files)
         if ready_files_for_backup:
             print("Top 3 files ready for backup:")
@@ -39,11 +39,11 @@ def main():
 
             if len(ready_files_for_backup) > 3:
                 print("Bottom 3 files ready for backup:")
-                for i, file in enumerate(ready_files_for_backup[-3:], start=len(ready_files_for_backup)-2):
+                for i, file in enumerate(ready_files_for_backup[-3:], start=len(ready_files_for_backup)-2): 
                     print(f"  {i}. {os.path.basename(file)}")
 
         print("Checking for duplicate files in the downloads folder...")
-        duplicate_files = duplicate_files_check(source_path)
+        duplicate_files = duplicate_files_check(ready_files_for_backup)
         if duplicate_files:
             print(f"Found {len(duplicate_files)} duplicate files:")
             for file in duplicate_files:
