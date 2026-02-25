@@ -11,7 +11,18 @@
 
     "backup_target": {
         "volume_label": "BACKUP_DRIVE",
-        "backup_directory_name": "Downloads_Backup"
+        "backup_directory_name": "Downloads_Backup",
+        "backup_directory_path": "tests/sandbox/backup",
+        "backup_folders": {
+            "Documents":[".docx", ".pdf", ".txt"],
+            "Images": [".jpg", ".jpeg", ".png", ".gif"],
+            "Videos": [".mp4", ".avi", ".mkv"],
+            "Archives": [".zip", ".rar", ".7z"],
+            "Executables": [".exe", ".msi"],
+            "Audio": [".mp3", ".wav", ".flac"],
+            "Others": []
+        }
+
 
     },
 
