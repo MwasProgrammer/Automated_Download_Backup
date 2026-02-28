@@ -2,6 +2,7 @@ import os
 import json
 from modules.discovery import get_source_path
 from modules.auditor import scan_downloads_files, duplicate_files_check
+from modules.executor import check_disk_space, get_destination_path, move_to_backup_drive
 
 def load_config(): # Load cofiguration from config.json
     config_path = os.path.join(os.path.dirname(__file__), 'config.json')
