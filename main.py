@@ -52,6 +52,17 @@ def main():
         else:
             print("No duplicate files found.")
 
+        # Implement backup logic here (e.g., check disk space, move files to backup drive)
+        print("Checking disk space on backup drive...")
+        backup_drive = configuration['backup_target']['backup_directory_path'] if configuration['source_settings'].get('sandbox_mode') else os.path.join("D:/", configuration['backup_target']['backup_directory_name'])
+        if check_disk_space(backup_drive):
+            print("Sufficient disk space available on backup drive.")
+            for file in ready_files_for_backup:
+                destination_path = get_destination_path(file, configuration)
+                move_to_backup_drive(file, destination_path)
+        
+
+
     except Exception as e:
         print(f"An error occurred while loading configuration: {e}")
         return
