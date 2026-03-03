@@ -61,6 +61,11 @@ def main():
                 destination_path = get_destination_path(file, configuration)
                 move_to_backup_drive(file, destination_path)
         
+        # Ensure base backup directory exists before checking disk space
+        if not os.path .exists(backup_drive):
+            os.makedirs(backup_drive, exist_ok=True)
+            print(f"Created backup drive directory: {backup_drive}")
+
 
 
     except Exception as e:
