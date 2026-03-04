@@ -54,19 +54,23 @@ def main():
 
         # Implement backup logic here (e.g., check disk space, move files to backup drive)
         print("Checking disk space on backup drive...")
-        backup_drive = configuration['backup_target']['backup_directory_path'] if configuration['source_settings'].get('sandbox_mode') else os.path.join("D:/", configuration['backup_target']['backup_directory_name'])
+        if configuration['source_settings'].get('sandbox_mode'):
+            backup_drive = configuration['backup_target']['backup_directory_path'] # Use the specified backup directory path in sandbox mode
+        else:
+            backup_drive = os.path.join("D:/", configuration['backup_target']['backup_directory_name'])
+
+        # Create backup drive directory if it doesn't exist
+        if not os.path.exists(backup_drive):
+            os.makedirs(backup_drive)
+            print(f"Created backup drive directory: {backup_drive}")
+
+        # Check disk space on backup drive
         if check_disk_space(backup_drive):
-            print("Sufficient disk space available on backup drive.")
+            print(f"Disk space on backup drive {backup_drive} is sufficient for backup.")
+        # Move files to backup drive
             for file in ready_files_for_backup:
                 destination_path = get_destination_path(file, configuration)
                 move_to_backup_drive(file, destination_path)
-        
-        # Ensure base backup directory exists before checking disk space
-        if not os.path .exists(backup_drive):
-            os.makedirs(backup_drive, exist_ok=True)
-            print(f"Created backup drive directory: {backup_drive}")
-
-
 
     except Exception as e:
         print(f"An error occurred while loading configuration: {e}")
