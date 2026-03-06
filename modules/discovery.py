@@ -1,15 +1,41 @@
-import os
+from pathlib import Path
+import string 
+import ctypes # Import ctypes for Windows API calls to check drive types
+import logging
 
-def get_source_path(config): # The user downloads
-    target_directory_name = config['source_settings']['target_directory_name'] 
-    is_sandbox_mode = config['source_settings'].get('sandbox_mode', False)
+logger = logging.getLogger('backup_downloads_logger.discovery') 
+
+def get_drive_by_label(target_label):
+    bitmask = ctypes.windll.kernel32.GetLogicalDrives() # Get a bitmask of all logical drives
+    for letter in string.ascii_uppercase:
+        if bitmask & 1:
+            drive = f"{letter}:\\"
+            volume_name = ctypes.create_unicode_buffer(1024)
+            ctypes.windll.kernel32.GetVolumeInformationW(
+                drive, volume_name, 1024, None, None, None, None, 0
+            )
+            if volume_name.value.upper() == target_label.upper():
+                return Path (drive)
+
+        bitmask >>= 1 # Shift the bitmask to check the next drive
+        
+    return None 
+
+
+def get_source_path(config: dict) -> Path: # The user downloads
+    source_settings = config.get('source_settings', {})
+    is_sandbox_mode = source_settings.get('sandbox_mode', False)
+    
 
     if is_sandbox_mode:
-        print("Sandbox mode enabled. Using sandbox directory for source path.")
-        target_directory_path = config['source_settings'].get('target_directory_path')
-        source_path = os.path.abspath(target_directory_path)
+        logger.warning("Sandbox mode active. Using relative pathing.")
+        raw_path = source_settings.get('target_directory_path', 'test\sandbox\downloads' )
+        source_path = Path(raw_path).resolve()
 
     else:
-        source_path = os.path.join(os.path.expanduser('~'), target_directory_name) 
+        target_name = source_settings.get('target_directory_name', 'Downloads')
+        source_path = Path.home() / target_name 
+
+        logger.info(f"Production source path identified: {source_path}")
 
     return source_path
