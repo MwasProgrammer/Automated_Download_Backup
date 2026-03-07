@@ -1,8 +1,10 @@
 import os
 import json
+import logging 
 from modules.discovery import get_source_path
 from modules.auditor import scan_downloads_files, duplicate_files_check
 from modules.executor import check_disk_space, get_destination_path, move_to_backup_drive
+from modules.backup_downloads_logger import configure_backup_downloads_logger
 
 def load_config(): # Load cofiguration from config.json
     config_path = os.path.join(os.path.dirname(__file__), 'config.json')
@@ -15,6 +17,9 @@ def load_config(): # Load cofiguration from config.json
     
 def main():
     print("Loading configuration...")
+
+    logger = configure_backup_downloads_logger()
+    logger.info("Configurations loaded successfully. Starting backup process.")
 
     try:
         configuration = load_config() # Load configuration from config.json
@@ -73,7 +78,7 @@ def main():
                 move_to_backup_drive(file, destination_path)
 
     except Exception as e:
-        print(f"An error occurred while loading configuration: {e}")
+        logger.error(f"An error occurred while loading configuration: {e}")
         return
     
     #print("Starting main application logic...")
