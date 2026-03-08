@@ -29,7 +29,7 @@ def get_source_path(config: dict) -> Path: # The user downloads
 
     if is_sandbox_mode:
         logger.warning("Sandbox mode active. Using relative pathing.")
-        raw_path = source_settings.get('target_directory_path', 'test\sandbox\downloads' )
+        raw_path = source_settings.get('target_directory_path', 'test/sandbox/downloads' )
         source_path = Path(raw_path).resolve()
 
     else:
