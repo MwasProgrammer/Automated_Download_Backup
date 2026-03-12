@@ -1,0 +1,4 @@
+2026-03-10 15:15:10,122 - backup_downloads_logger - INFO - Configurations loaded successfully. Starting backup process.
+2026-03-10 15:15:10,127 - backup_downloads_logger.discovery - WARNING - Sandbox mode active. Using relative pathing.
+2026-03-10 15:15:10,132 - backup_downloads_logger.auditor - INFO - Scanned 2 in C:\DevOps\AutomatedDownloadBackup\tests\sandbox\downloads folder, ready for backup.
+2026-03-10 15:15:10,631 - backup_downloads_logger - ERROR - An error occurred while loading configuration: get_destination_path() missing 1 required positional argument: 'backup_root_path'
