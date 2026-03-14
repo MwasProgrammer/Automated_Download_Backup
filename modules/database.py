@@ -10,8 +10,43 @@ class BackupDatabase:
         self.db_path = db_path
         self._initialize_db()
 
-    def _initialize_db(self)
+    def _initialize_db(self):
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute
+                cursor.execute ('''
+                        CREATE TABLE IF NOT EXISTS processed_files (
+                                file_hash TEXT PRIMARY KEY, 
+                                file_name TEXT,
+                                backup_date TEXT
+                                )
+                                ''')
+                conn.commit()
+        
+        except sqlite3.Error as e:
+            logger.error(f"Database Initialization failed! {e}") 
+                
+                
+    def is_already_processed (self, file_hash: str) -> bool:
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor. execute ('SELECT 1  FROM processed_files WHERE file_hash = ?', (file_hash,))
+                return cursor.fetchone() is not None
+            
+        except sqlite3.Error as e:
+            logger.error(f"Error checking File Hash {file_hash}: {e}")
+            return False
+    
+    def mark_as_processed (self, file_hash: str, file_name: str):
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''INSERT INTO processed_files (file_hash, file_name, backup_date)
+                               VALUES (?, ?, ?)
+                               ''', (file_hash, file_name, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                conn.commit()
+        
+
+        except sqlite3.Error as e:
+            logger.error(f"Failed to record backup file hash for {file_name}: {e}")
