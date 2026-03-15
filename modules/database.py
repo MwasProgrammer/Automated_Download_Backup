@@ -42,7 +42,7 @@ class BackupDatabase:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('''INSERT INTO processed_files (file_hash, file_name, backup_date)
+                cursor.execute('''INSERT OR IGNORE INTO processed_files (file_hash, file_name, backup_date)
                                VALUES (?, ?, ?)
                                ''', (file_hash, file_name, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
                 conn.commit()
