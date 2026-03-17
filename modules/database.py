@@ -13,7 +13,8 @@ class BackupDatabase:
     def _initialize_db(self):
         try:
             with sqlite3.connect(self.db_path) as conn:
-                conn.execute('PRAGMA journal_mode = WAL;')
+                conn.execute('PRAGMA journal_mode = WAL;') # Tells SQLite to write changes to a separate log file first, 
+                                                        # which prevents the main database from becoming "busy" or "locked" during heavy file operations.
 
                 cursor = conn.cursor()
                 cursor.execute ('''
