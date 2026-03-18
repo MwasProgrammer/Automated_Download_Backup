@@ -11,7 +11,7 @@ def check_disk_space(backup_drive: Path) -> bool:
     # Check if free space is less than 1GB
     if free_gb < 1:
         raise OSError(F"Disk storage space critical: Remaining storage space on {backup_drive} is {free_gb}GB!")
-    return True
+    return True 
 
 def get_destination_path(file_path: Path, config: dict, backup_root_path: Path) -> Path:
     file_extension = file_path.suffix.lower()
