@@ -5,16 +5,17 @@ import logging
 
 logger = logging.getLogger('backup_downloads_logger.discovery') 
 
-def get_drive_by_label(target_label):
+def get_drive_by_label(target_label: str) -> Path:
     bitmask = ctypes.windll.kernel32.GetLogicalDrives() # Get a bitmask of all logical drives
     for letter in string.ascii_uppercase:
         if bitmask & 1:
             drive = f"{letter}:\\"
             volume_name = ctypes.create_unicode_buffer(1024)
-            ctypes.windll.kernel32.GetVolumeInformationW(
+            drive_results = ctypes.windll.kernel32.GetVolumeInformationW(
                 drive, volume_name, 1024, None, None, None, None, 0
             )
-            if volume_name.value.upper() == target_label.upper():
+            if drive_results and volume_name.value.upper() == target_label.upper():
+                logger.info(f"Drive discovery: Found '{target_label}' at {drive}")
                 return Path (drive)
 
         bitmask >>= 1 # Shift the bitmask to check the next drive
