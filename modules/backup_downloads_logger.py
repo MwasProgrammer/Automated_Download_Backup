@@ -1,22 +1,39 @@
 import logging
 import sys
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 from datetime import datetime
 # Configure logging for backup downloads
 def configure_backup_downloads_logger():
     logger = logging.getLogger('backup_downloads_logger')
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
-    if not logger.hasHandlers(): 
-        log_filename = f"backup_downloads_{datetime.now().strftime('%Y-%m-%d')}.log" # Log file name with current date 
+    if logger.hasHandlers(): 
+        logger.handlers.clear()
 
-        file_handler = logging.FileHandler(log_filename) # Create a file handler to write logs to a file
-        stream_handler = logging.StreamHandler(sys.stdout)
-        
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        file_handler.setFormatter(formatter)
-        stream_handler.setFormatter(formatter)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
 
-        logger.addHandler(file_handler) 
-        logger.addHandler(stream_handler)
+    console_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S')
+    console_handler.setFormatter(console_format)
+
+    log_directory = Path(__file__).parent.parent / "Logs"
+    log_directory.mkdir(exist_ok = True)
+    log_file = log_directory / "backup_details.log"
+
+    file_handler = RotatingFileHandler(
+        log_file,
+        maxBytes= 1024 * 1024,
+        backupCount= 5
+
+    )
+
+    file_handler.setLevel(logging.DEBUG)
+
+    file_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(file_format)
+
+    logger.addHandler(console_handler) 
+    logger.addHandler(file_handler)
 
     return logger
