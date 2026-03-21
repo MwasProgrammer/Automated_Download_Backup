@@ -1,0 +1,27 @@
+2026-03-20 22:20:20,771 - backup_downloads_logger - INFO - Loading configuration...
+2026-03-20 22:20:20,772 - backup_downloads_logger - INFO - Configurations loaded successfully. Starting backup process.
+2026-03-20 22:20:20,777 - backup_downloads_logger - INFO - Configuration loaded successfully: Automated Download Backup version 1.0.0
+2026-03-20 22:20:20,799 - backup_downloads_logger.discovery - WARNING - Sandbox mode active. Using relative pathing.
+2026-03-20 22:20:20,801 - backup_downloads_logger.auditor - INFO - Scanned 4 in C:\DevOps\AutomatedDownloadBackup\tests\sandbox\downloads folder, ready for backup.
+2026-03-20 22:20:20,869 - backup_downloads_logger.executor - INFO - Stagging: Al Sweigart - Automate the Boring Stuff with Python_ Practical Programming for Total Beginners-No Starch Press (2015).pdf as Al Sweigart - Automate the Boring Stuff with Python_ Practical Programming for Total Beginners-No Starch Press (2015).pdf.tmp
+2026-03-20 22:20:20,885 - backup_downloads_logger.executor - INFO - Backed up file Al Sweigart - Automate the Boring Stuff with Python_ Practical Programming for Total Beginners-No Starch Press (2015).pdf to C:\DevOps\AutomatedDownloadBackup\tests\sandbox\backup\Documents\Al Sweigart - Automate the Boring Stuff with Python_ Practical Programming for Total Beginners-No Starch Press (2015).pdf.tmp
+2026-03-20 22:20:21,017 - backup_downloads_logger.executor - INFO - Al Sweigart - Automate the Boring Stuff with Python_ Practical Programming for Total Beginners-No Starch Press (2015).pdf verified and backed up.
+2026-03-20 22:20:21,023 - backup_downloads_logger.executor - INFO - Stagging: NJO Logo.jpeg as NJO Logo.jpeg.tmp
+2026-03-20 22:20:21,026 - backup_downloads_logger.executor - INFO - Backed up file NJO Logo.jpeg to C:\DevOps\AutomatedDownloadBackup\tests\sandbox\backup\Images\NJO Logo.jpeg.tmp
+2026-03-20 22:20:21,028 - backup_downloads_logger.executor - INFO - NJO Logo.jpeg verified and backed up.
+2026-03-20 22:20:21,033 - backup_downloads_logger - INFO - Skipping file PEP 8 LOGO.jpeg. This file is already backed up!
+2026-03-20 22:20:21,044 - backup_downloads_logger.executor - INFO - Stagging: PythonNetBinder.pdf as PythonNetBinder.pdf.tmp
+2026-03-20 22:20:21,048 - backup_downloads_logger.executor - INFO - Backed up file PythonNetBinder.pdf to C:\DevOps\AutomatedDownloadBackup\tests\sandbox\backup\Documents\PythonNetBinder.pdf.tmp
+2026-03-20 22:20:21,067 - backup_downloads_logger.executor - INFO - PythonNetBinder.pdf verified and backed up.
+2026-03-20 22:20:21,069 - backup_downloads_logger - INFO - Back up complete successfully!
+2026-03-20 22:37:36,695 - backup_downloads_logger - INFO - Loading configuration...
+2026-03-20 22:37:36,695 - backup_downloads_logger - INFO - Configurations loaded successfully. Starting backup process.
+2026-03-20 22:37:36,696 - backup_downloads_logger - INFO - Configuration loaded successfully: Automated Download Backup version 1.0.0
+2026-03-20 22:37:36,699 - backup_downloads_logger.discovery - WARNING - Sandbox mode active. Using relative pathing.
+2026-03-20 22:37:36,701 - backup_downloads_logger.auditor - INFO - Scanned 3 in C:\DevOps\AutomatedDownloadBackup\tests\sandbox\downloads folder, ready for backup.
+2026-03-20 22:37:36,704 - backup_downloads_logger.executor - INFO - Stagging: Copy Preliminary Major (Cycle Of Fourths) 2 Bars 2 - Copy.html as Copy Preliminary Major (Cycle Of Fourths) 2 Bars 2 - Copy.html.tmp
+2026-03-20 22:37:36,707 - backup_downloads_logger.executor - INFO - Backed up file Copy Preliminary Major (Cycle Of Fourths) 2 Bars 2 - Copy.html to C:\DevOps\AutomatedDownloadBackup\tests\sandbox\backup\Others\Copy Preliminary Major (Cycle Of Fourths) 2 Bars 2 - Copy.html.tmp
+2026-03-20 22:37:36,710 - backup_downloads_logger.executor - INFO - Copy Preliminary Major (Cycle Of Fourths) 2 Bars 2 - Copy.html verified and backed up.
+2026-03-20 22:37:36,717 - backup_downloads_logger - INFO - Skipping file PEP 8 LOGO.jpeg. This file is already backed up!
+2026-03-20 22:37:36,719 - backup_downloads_logger - INFO - Skipping file Preliminary Major (Cycle Of Fourths) 2 Bars 2.html. This file is already backed up!
+2026-03-20 22:37:36,720 - backup_downloads_logger - INFO - Back up complete successfully!

@@ -1,87 +1,93 @@
-import os
 import json
 import logging 
-from modules.discovery import get_source_path
-from modules.auditor import scan_downloads_files, duplicate_files_check
+from pathlib import Path
+from modules.discovery import get_source_path, get_drive_by_label
+from modules.auditor import scan_downloads_files, calculate_file_hash
 from modules.executor import check_disk_space, get_destination_path, move_to_backup_drive
+from modules.database import BackupDatabase
 from modules.backup_downloads_logger import configure_backup_downloads_logger
 
-def load_config(): # Load cofiguration from config.json
-    config_path = os.path.join(os.path.dirname(__file__), 'config.json')
+def load_config() -> dict: # Load cofiguration from config.json
+    config_path = Path(__file__).parent / 'config.json'
 
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(f"Error: 'config.json' not found in {config_path}")
-
-    with open(config_path, 'r') as f:
-        return json.load(f)
+    try:
+        with open(config_path, 'r') as f:
+            return json.load(f)
+        
+    except Exception as e:
+        raise RuntimeError(f"Could not load configuration file config.json: {e}")
+        
+def resolve_backup_root(config: dict) -> Path:
+    target_config = config['backup_target']
+    if config ['source_settings'].get('sandbox_mode'):
+        return Path(target_config['backup_directory_path']).resolve() 
     
-def main():
-    print("Loading configuration...")
+    drive_label = target_config.get('volume_label', 'BACKUP_DRIVE')
+    found_drive = get_drive_by_label(drive_label)
+    
+    if not found_drive:
+        raise OSError(f"Error: Drive with label {drive_label} not found!")
+    
+    return found_drive / target_config['backup_directory_name']
 
+def process_single_file(file_path, config, backup_root, db, logger):
+    try:
+        f_hash = calculate_file_hash(file_path)
+        if not f_hash:
+            return
+        
+        if db.is_already_processed(f_hash):
+            logger.info(f"Skipping file {file_path.name }. This file is already backed up!")
+            return
+        
+        destination_path = get_destination_path(file_path, config, backup_root)
+
+        if move_to_backup_drive(file_path, destination_path):
+
+            db.mark_as_processed(f_hash, file_path.name, source_path = file_path.parent)
+
+    except Exception as e:
+        logger.error(f"Error: Backup cancelled for file {file_path.name}: {e}")
+
+
+def main():
     logger = configure_backup_downloads_logger()
+    logger.info(f"Loading configuration...")
     logger.info("Configurations loaded successfully. Starting backup process.")
 
     try:
         configuration = load_config() # Load configuration from config.json
-        print(f"Configuration loaded successfully: {configuration ['project_name']} version {configuration ['version']}")
+        logger.info(f"Configuration loaded successfully: {configuration ['project_name']} version {configuration ['version']}")
     
-        print("Discovering source path...")
-        source_path =get_source_path(configuration) # Get the source path for user downloads based on the configuration settings
+        db_path = Path(__file__).parent / "back_history.db"
+        db = BackupDatabase(db_path)
 
-        if os.path.exists(source_path):
-            print(f"Source path discovered: {source_path}")
-        else:
-            print(f"Error: Source path not found: {source_path}")
+        source = get_source_path(configuration)
+        backup_root = resolve_backup_root(configuration)
 
-        print("Scanning downloads folder for files ready for backup...")
-        ready_files_for_backup = scan_downloads_files(source_path, configuration)
-        print(f"Found {len(ready_files_for_backup)} files ready for backup.")
-  
-        # View files ready for backup (top 3 files and bottom 3 files)
-        if ready_files_for_backup:
-            print("Top 3 files ready for backup:")
-            for i, file in enumerate(ready_files_for_backup[:3]):
-                print(f"  {i+1}. {os.path.basename(file)}")
+        if not source.exists():
+            logger.error(f"The source directory {source} not found!")
 
-            if len(ready_files_for_backup) > 3:
-                print("Bottom 3 files ready for backup:")
-                for i, file in enumerate(ready_files_for_backup[-3:], start=len(ready_files_for_backup)-2): 
-                    print(f"  {i}. {os.path.basename(file)}")
+            return
+        
+        check_disk_space(backup_root)
+        backup_root.mkdir(parents = True, exist_ok =True)
 
-        print("Checking for duplicate files in the downloads folder...")
-        duplicate_files = duplicate_files_check(ready_files_for_backup)
-        if duplicate_files:
-            print(f"Found {len(duplicate_files)} duplicate files:")
-            for file in duplicate_files:
-                print(f"  - {os.path.basename(file)}")
-        else:
-            print("No duplicate files found.")
+        files_to_process = scan_downloads_files(source, configuration)
 
-        # Implement backup logic here (e.g., check disk space, move files to backup drive)
-        print("Checking disk space on backup drive...")
-        if configuration['source_settings'].get('sandbox_mode'):
-            backup_drive = configuration['backup_target']['backup_directory_path'] # Use the specified backup directory path in sandbox mode
-        else:
-            backup_drive = os.path.join("D:/", configuration['backup_target']['backup_directory_name'])
+        for file in files_to_process:
+            process_single_file(file, configuration, backup_root, db, logger)
 
-        # Create backup drive directory if it doesn't exist
-        if not os.path.exists(backup_drive):
-            os.makedirs(backup_drive)
-            print(f"Created backup drive directory: {backup_drive}")
-
-        # Check disk space on backup drive
-        if check_disk_space(backup_drive):
-            print(f"Disk space on backup drive {backup_drive} is sufficient for backup.")
-        # Move files to backup drive
-            for file in ready_files_for_backup:
-                destination_path = get_destination_path(file, configuration)
-                move_to_backup_drive(file, destination_path)
+    except (RuntimeError, OSError) as e:
+        logger.critical(f"System halt: {e}")
 
     except Exception as e:
-        logger.error(f"An error occurred while loading configuration: {e}")
-        return
-    
-    #print("Starting main application logic...")
+        logger.error(f"System unexcepted error: {e}")
+
+    finally:
+        logger.info(f"Back up complete successfully!")
 
 if __name__ == "__main__":
-    main()
+        main()
+
+        
