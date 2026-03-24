@@ -12,7 +12,7 @@ def scan_downloads_files(source_path: Path, config: dict) -> list[Path]:
         if item.is_file() and item.suffix.lower() not in forbidden_files
     ]
 
-    logger.info(f"Scanned {len(ready_files)} in {source_path} folder, ready for backup.")
+    logger.info(f"Scanned {len(ready_files)} files in {source_path} folder, ready for backup.")
 
     return ready_files
 
