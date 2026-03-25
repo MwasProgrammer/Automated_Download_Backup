@@ -5,12 +5,14 @@
     "source_settings": {
         "target_directory_name": "Downloads",
         "use_envs_vars": true,
-        "sandbox_mode": true,  
+        "sandbox_mode": false,  
         "target_directory_path":"tests/sandbox/downloads"
     },
 
+    "BACKUP_BATCH": 50,
+
     "backup_target": {
-        "volume_label": "BACKUP_DRIVE",
+        "volume_label": "AUTO",
         "backup_directory_name": "Downloads_Backup",
         "backup_directory_path": "tests/sandbox/backup",
         "backup_folders": {
