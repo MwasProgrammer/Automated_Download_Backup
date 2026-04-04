@@ -4,11 +4,12 @@ from pathlib import Path
 from main import main, load_config
 from modules.error_exceptions import ConfigurationError, EnvironmentError
 import logging
+from modules.backup_downloads_logger import configure_backup_downloads_logger
 
-logger = logging.getLogger('backup_downloads_logger')
+test_logger = configure_backup_downloads_logger()
 
 def run_exception_validation_test():
-    logger.info(f"DRY RUN for exception_validation unit test.")
+    test_logger.info(f"DRY RUN for exception_validation unit test.")
     original_config = ""
     config_path = Path("config.json")
 
@@ -19,9 +20,17 @@ def run_exception_validation_test():
             f.write("{this_is_corrupt_json}")
     
     try:
-        logger.info(f"Testing laod configuration with a 'corrupt' version JSON.")
+        test_logger.info(f"Testing laod configuration with a 'corrupt' version JSON.")
         load_config()
 
     except Exception as e:
-        logger.info(f"Successfully caught expected error as {e}")
+        test_logger.info(f"Successfully caught expected error as {e}")
+    
+    finally:
+        with open (config_path, "w") as f:
+            f.write(original_config)
+
         
+
+if __name__ == "__main__":
+    run_exception_validation_test()
