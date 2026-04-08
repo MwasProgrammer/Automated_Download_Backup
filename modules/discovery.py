@@ -4,14 +4,14 @@ import ctypes # Import ctypes for Windows API calls to check drive types
 import logging
 
 logger = logging.getLogger('backup_downloads_logger.discovery') 
-DRIVE_REMOVABLE = 3
-DRIVE_FIXED = 2 
+DRIVE_REMOVABLE = 2
+DRIVE_FIXED = 3 
 
-def get_drive_by_label(target_label: str = "AUTO") -> Path:
+def list_available_drives() -> dict:
     bitmask = ctypes.windll.kernel32.GetLogicalDrives() # Get a bitmask of all logical drives
 
     system_drive = Path.home().drive.upper()
-    fallback_drive = None
+    found_drives = {}
 
     for letter in string.ascii_uppercase:
         if bitmask & 1:
@@ -33,21 +33,24 @@ def get_drive_by_label(target_label: str = "AUTO") -> Path:
             )
 
             if drive_results: 
-                if target_label != "AUTO" and volume_name.value.upper() == target_label.upper():
-                    logger.debug(f"Drive discovery: Found '{target_label}' at {drive}")
-                    return Path (drive)
-            
-                if fallback_drive is None:
-                    fallback_drive = Path(drive)
-                        
+                disk_label = volume_name.value if volume_name.value else "UNTITLED"
+                found_drives[disk_label.upper()] = Path(drive)
+                
         bitmask >>= 1 # Shift the bitmask to check the next drive
-        
-    if fallback_drive:
-        logger.info(f"Drive Discovery: Using AutoDrive at {fallback_drive}")
-        return fallback_drive
-    
-    return None 
+            
+    return found_drives
 
+def get_drive_by_label(target_label: str = "AUTO") -> Path:
+    available_drives = list_available_drives()
+
+    if not available_drives:
+        logger.error(f"BACKUP DRIVE NOT FOUND!")
+        return None
+    
+    if target_label != "Auto":
+        target_upper =  target_label.upper()
+        if target_upper in available_drives:
+            logger.info(f"Target Backup Drive {target_label} found at {available_drives[target_upper]}")
 
 def get_source_path(config: dict) -> Path: # The user downloads
     source_settings = config.get('source_settings', {})
