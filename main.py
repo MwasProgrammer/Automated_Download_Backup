@@ -1,12 +1,14 @@
 import json
 import logging 
 from pathlib import Path
-from modules.discovery import get_source_path, get_drive_by_label
+from modules.discovery import list_available_drives, get_source_path, get_drive_by_label
 from modules.auditor import scan_downloads_files, calculate_file_hash
 from modules.executor import check_disk_space, get_destination_path, move_to_backup_drive
 from modules.database import BackupDatabase
 from modules.backup_downloads_logger import configure_backup_downloads_logger
 from modules.constants import BackupStatus
+from modules.error_exceptions import ConfigurationError, EnvironmentError, IntegrityError
+
 def load_config() -> dict: # Load cofiguration from config.json
     config_path = Path(__file__).parent / 'config.json'
 
@@ -23,13 +25,17 @@ def resolve_backup_root(config: dict) -> Path:
         return Path(target_config['backup_directory_path']).resolve() 
     
     drive_label = target_config.get('volume_label', 'AUTO')
-    found_drive = get_drive_by_label(drive_label)
+    if drive_label == "SELECT":
+        available_drives = list_available_drives()
+        print("\n --- Available Backup Drives ---")
+        for i, (lable, path) in enumerate (available_drives.items(), 1):
+            print(f"{i}. {lable} ({path})")
 
+        backup_drive_choice = int(input("\nSelect drive: "))
+        selected_drive =list(available_drives.keys())[backup_drive_choice - 1]
     
-    if not found_drive:
-        raise OSError(f"Error: Drive with label {drive_label} not found!")
     
-    return found_drive / target_config['backup_directory_name']
+    return available_drives[selected_drive] / target_config['backup_directory_name']
 
 def process_single_file(file_path, config, backup_root, db, logger):
     try:
@@ -111,11 +117,14 @@ def main():
         logger.info(f"Files with Errors during Back-Up: {dashboard_stats[BackupStatus.FAILED]}")
         logger.info("="*35)
 
-    except (RuntimeError, OSError) as e:
-        logger.critical(f"System halt: {e}")
+    except ConfigurationError as e:
+        logger.critical(f"CONFIG FAILURE: {e}")
 
-    except Exception as e:
-        logger.error(f"System unexcepted error: {e}")
+    except EnvironmentError as e:
+        logger.critical(f"BACKUP DRIVE FAILURE: {e}")
+
+    except IntegrityError as e:
+        logger.error(f"File Hash mismatch: {e}") 
 
     finally:
         if backup_success:
