@@ -51,7 +51,9 @@ def get_drive_by_label(target_label: str = "AUTO") -> Path:
         target_upper =  target_label.upper()
         if target_upper in available_drives:
             logger.info(f"Target Backup Drive {target_label} found at {available_drives[target_upper]}")
-
+            return available_drives[target_upper] 
+        return None 
+    
 def get_source_path(config: dict) -> Path: # The user downloads
     source_settings = config.get('source_settings', {})
     is_sandbox_mode = source_settings.get('sandbox_mode', False)
