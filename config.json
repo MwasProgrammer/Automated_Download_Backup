@@ -9,10 +9,10 @@
         "target_directory_path":"tests/sandbox/downloads"
     },
 
-    "BACKUP_BATCH": 50,
+    "BACKUP_BATCH": 10,
 
     "backup_target": {
-        "volume_label": "AUTO",
+        "volume_label": "SELECT",
         "backup_directory_name": "Downloads_Backup",
         "backup_directory_path": "tests/sandbox/backup",
         "backup_folders": {
