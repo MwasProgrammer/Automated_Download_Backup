@@ -32,10 +32,17 @@ def resolve_backup_root(config: dict) -> Path:
             print(f"{i}. {lable} ({path})")
 
         backup_drive_choice = int(input("\nSelect drive: "))
-        selected_drive =list(available_drives.keys())[backup_drive_choice - 1]
+        _, selected_drive =list(available_drives.items())[backup_drive_choice - 1]
     
     
-    return available_drives[selected_drive] / target_config['backup_directory_name']
+        return selected_drive / target_config['backup_directory_name']
+
+    autoselect = get_drive_by_label(drive_label) 
+    if not autoselect:
+        raise EnvironmentError(f"Backup drive with label {drive_label} not found!")
+    
+    return autoselect / target_config['backup_directory_name']
+
 
 def process_single_file(file_path, config, backup_root, db, logger):
     try:
