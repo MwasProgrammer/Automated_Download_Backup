@@ -41,4 +41,4 @@ A robust, Python-based utility designed to automate the backup of files from you
     python main.py
 
 ## Licence
-Automated Download Project is an open-source project. Feel free to log issues or submit pull requests to improve the discovery logic or add support for additional OS platforms. See the [licence](LICENCE) details [here🔽](LICENCE).
+Automated Download Backup is an open-source project. Feel free to log issues or submit pull requests to improve the discovery logic or add support for additional OS platforms. See the licence details [here🔽](LICENCE).
