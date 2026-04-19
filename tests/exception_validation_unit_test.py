@@ -15,7 +15,7 @@ def run_exception_validation_test():
 
     if config_path.exists():
         original_config = config_path.read_text()
-        with open (config_path, "w") as f:
+        with open (config_path, "w") as f: 
             f.write("{this_is_corrupt_json}")
     
     try:
