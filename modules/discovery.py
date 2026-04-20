@@ -54,6 +54,10 @@ def get_drive_by_label(target_label: str = "AUTO") -> Path:
             return available_drives[target_upper] 
         return None 
     
+    first_label = list(available_drives.keys())[0]
+    logger.info(f"Autoselect: The firstBackup drive detected is {first_label}")
+    return available_drives[first_label]
+    
 def get_source_path(config: dict) -> Path: # The user downloads
     source_settings = config.get('source_settings', {})
     is_sandbox_mode = source_settings.get('sandbox_mode', False)
