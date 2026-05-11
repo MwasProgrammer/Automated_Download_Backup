@@ -13,7 +13,7 @@
 
     "backup_target": {
         "volume_label": "SELECT",
-        "backup_directory_name": "Downloads_Backup",
+        "backup_directory_name": "/media/mwas-programmer/hDD/ubuntu-backup",
         "backup_directory_path": "tests/sandbox/backup",
         "backup_folders": {
             "Documents":[".docx", ".pdf", ".txt"],
