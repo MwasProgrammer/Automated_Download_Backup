@@ -15,12 +15,13 @@
         "volume_label": "SELECT",
         "backup_directory_name": "/media/mwas-programmer/hDD/ubuntu-backup",
         "backup_directory_path": "tests/sandbox/backup",
+        "is_ntfs": true,
         "backup_folders": {
-            "Documents":[".docx", ".pdf", ".txt"],
+            "Documents":[".docx", ".pdf", ".txt", ".odt"],
             "Images": [".jpg", ".jpeg", ".png", ".gif"],
             "Videos": [".mp4", ".avi", ".mkv"],
             "Archives": [".zip", ".rar", ".7z"],
-            "Executables": [".exe", ".msi"],
+            "Executables": [".exe", ".msi", ".deb", ".rpm"],
             "Audio": [".mp3", ".wav", ".flac"],
             "Others": []
         }
