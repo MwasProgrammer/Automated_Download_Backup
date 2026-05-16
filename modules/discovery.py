@@ -1,6 +1,6 @@
 from pathlib import Path
-import string 
-import ctypes # Import ctypes for Windows API calls to check drive types
+import platform
+import os
 import logging
 
 logger = logging.getLogger('backup_downloads_logger.discovery') 
@@ -8,36 +8,54 @@ DRIVE_REMOVABLE = 2
 DRIVE_FIXED = 3 
 
 def list_available_drives() -> dict:
-    bitmask = ctypes.windll.kernel32.GetLogicalDrives() # Get a bitmask of all logical drives
-
-    system_drive = Path.home().drive.upper()
     found_drives = {}
+    current_os = platform.system()
 
-    for letter in string.ascii_uppercase:
-        if bitmask & 1:
-            drive = f"{letter}:\\"
-            
-            if f"{letter}:" == system_drive:
-                bitmask >>= 1
-                continue
+    if current_os == "Windows":
+        import ctypes
+        import string
 
-            drive_type = ctypes.windll.kernel32.GetDriveTypeW(drive)
-            
-            if drive_type not in (DRIVE_REMOVABLE, DRIVE_FIXED):
-                bitmask >>= 1
-                continue
+        DRIVE_REMOVABLE = 2
+        DRIVE_FIXED = 3
 
-            volume_name = ctypes.create_unicode_buffer(1024)
-            drive_results = ctypes.windll.kernel32.GetVolumeInformationW(
-                drive, volume_name, 1024, None, None, None, None, 0
-            )
+        bitmask = ctypes.windll.kernel32.GetLogicalDrives() # Get a bitmask of all logical drives
 
-            if drive_results: 
-                disk_label = volume_name.value if volume_name.value else "UNTITLED"
-                found_drives[disk_label.upper()] = Path(drive)
+        for letter in string.ascii_uppercase:
+            if bitmask & 1:
+                drive = f"{letter}:\\"
                 
-        bitmask >>= 1 # Shift the bitmask to check the next drive
-            
+                if f"{letter}:" == Path.home().drive:
+                    bitmask >>= 1
+                    continue
+
+                drive_type = ctypes.windll.kernel32.GetDriveTypeW(drive)
+                
+                if drive_type not in (DRIVE_REMOVABLE, DRIVE_FIXED):
+                    bitmask >>= 1
+                    continue
+
+                volume_name = ctypes.create_unicode_buffer(1024)
+                drive_results = ctypes.windll.kernel32.GetVolumeInformationW(
+                    drive, volume_name, 1024, None, None, None, None, 0
+                )
+
+                if drive_results: 
+                    disk_label = volume_name.value if volume_name.value else "UNTITLED"
+                    found_drives[disk_label.upper()] = Path(drive)
+                    
+            bitmask >>= 1 # Shift the bitmask to check the next drive
+
+    elif current_os == "Linux":
+        user_name = Path.home().name
+        search_paths = [Path("/media") / user_name, Path("/mnt")]
+        
+        for base_bath in search_paths:
+            if base_bath.exists():
+                for entry in base_bath.iterdir():
+                    if entry.is_dir() and os.path.ismount(entry):
+                        found_drives[entry.name.upper()] = entry.resolve()
+        
+                
     return found_drives
 
 def get_drive_by_label(target_label: str = "AUTO") -> Path:
