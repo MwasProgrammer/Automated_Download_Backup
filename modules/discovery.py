@@ -15,8 +15,6 @@ def list_available_drives() -> dict:
         import ctypes
         import string
 
-        DRIVE_REMOVABLE = 2
-        DRIVE_FIXED = 3
 
         bitmask = ctypes.windll.kernel32.GetLogicalDrives() # Get a bitmask of all logical drives
 
@@ -24,7 +22,7 @@ def list_available_drives() -> dict:
             if bitmask & 1:
                 drive = f"{letter}:\\"
                 
-                if f"{letter}:" == Path.home().drive:
+                if f"{letter}:" == Path.home().drive.upper():
                     bitmask >>= 1
                     continue
 
@@ -49,9 +47,9 @@ def list_available_drives() -> dict:
         user_name = Path.home().name
         search_paths = [Path("/media") / user_name, Path("/mnt")]
         
-        for base_bath in search_paths:
-            if base_bath.exists():
-                for entry in base_bath.iterdir():
+        for base_path in search_paths:
+            if base_path.exists():
+                for entry in base_path.iterdir():
                     if entry.is_dir() and os.path.ismount(entry):
                         found_drives[entry.name.upper()] = entry.resolve()
         
