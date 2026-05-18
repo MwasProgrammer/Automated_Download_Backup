@@ -9,7 +9,7 @@
         "target_directory_path":"/home/mwas-programmer/ADB-CLONE/Automated_Download_Backup/tests/sandbox/downloads"
     },
 
-    "BACKUP_BATCH": 10,
+    "BACKUP_BATCH": 5,
 
     "backup_target": {
         "volume_label": "SELECT",
