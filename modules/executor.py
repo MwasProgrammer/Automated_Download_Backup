@@ -2,6 +2,7 @@ from pathlib import Path
 import shutil
 import logging
 from modules.auditor import calculate_file_hash
+from modules.constants import BackupStatus
 
 logger = logging.getLogger('backup_downloads_logger.executor')
 
@@ -51,7 +52,7 @@ def move_to_backup_drive(source_file: Path, destination_file: Path) -> bool:
             source_file.unlink()
             logger.info(f"{source_file.name} verified and backed up.")
         
-            return True
+            return BackupStatus.BACKUP_SUCCESS
         else:
             raise ValueError(f"Hash mismatch for {source_file.name} - Integrity failure.")
         
@@ -61,6 +62,6 @@ def move_to_backup_drive(source_file: Path, destination_file: Path) -> bool:
             temp_dest.unlink()
             logger.warning(f"Rolled back transaction. File {temp_dest.name} is incomplete or corrupt!")
 
-        return False
+        return BackupStatus.FAILED
 
     
