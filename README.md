@@ -1,3 +1,44 @@
+# Release Changelog - Automated Download Backup (v1.1.0)
+Added: Integrated modern pyproject.toml packaging specifications.
+
+Added: Implemented an explicit console script entry point (automated-download-backup) for global terminal execution.
+
+Changed: Restructured source files into a standard importable Python module layout.
+
+Fixed: Eliminated manual script location dependencies inside the zipping pipeline.
+
+# Automated Download Backup v1.1.0
+
+A cross-platform Linux automation pipeline designed to securely capture, compress, and archive downloads into protected backup targets.
+
+---
+
+## Installation & Packaging (v1.1.0)
+
+The application is now distributed as a standard Python utility package via a console script entry point.
+
+## 1. Build from Source
+Ensure you have the Python build tools installed:
+```bash
+pip install build twine
+python -m build
+```
+
+## 2. Local Development Installation
+To install the package locally in editable mode (so changes to the code reflect instantly), execute the following from the root directory:
+(The -e flag initializes editable link tracks, allowing code updates inside your source directory to run instantly globally without requiring a package rebuild)
+```bash
+pip install -e .
+```
+
+## Usage
+Once installed, you can trigger the execution engine globally from any terminal path.
+Open any shell window and type the configured console script command to verify execution:
+```bash
+automated-download-backup
+```
+
+
 # Automated Download Backup (v1.0.0)
 
 A robust, Python-based utility designed to automate the backup of files from your Downloads folder to external storage with integrity verification and disk space management.
