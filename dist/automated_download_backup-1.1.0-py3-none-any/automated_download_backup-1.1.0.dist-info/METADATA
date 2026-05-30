@@ -1,0 +1,100 @@
+Metadata-Version: 2.4
+Name: automated-download-backup
+Version: 1.1.0
+Summary: A multi-threaded, cross-platform automated download backup tool
+Author: mwas-programmer
+Project-URL: Homepage, https://github.com/mwas-programmer/Automated_Download_Backup
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENCE
+Dynamic: license-file
+
+# Release Changelog - Automated Download Backup (v1.1.0)
+Added: Integrated modern pyproject.toml packaging specifications.
+
+Added: Implemented an explicit console script entry point (automated-download-backup) for global terminal execution.
+
+Changed: Restructured source files into a standard importable Python module layout.
+
+Fixed: Eliminated manual script location dependencies inside the zipping pipeline.
+
+# Automated Download Backup v1.1.0
+
+A cross-platform Linux automation pipeline designed to securely capture, compress, and archive downloads into protected backup targets.
+
+---
+
+## Installation & Packaging (v1.1.0)
+
+The application is now distributed as a standard Python utility package via a console script entry point.
+
+## 1. Build from Source
+Ensure you have the Python build tools installed:
+```bash
+pip install build twine
+python -m build
+```
+
+## 2. Local Development Installation
+To install the package locally in editable mode (so changes to the code reflect instantly), execute the following from the root directory:
+(The -e flag initializes editable link tracks, allowing code updates inside your source directory to run instantly globally without requiring a package rebuild)
+```bash
+pip install -e .
+```
+
+## Usage
+Once installed, you can trigger the execution engine globally from any terminal path.
+Open any shell window and type the configured console script command to verify execution:
+```bash
+automated-download-backup
+```
+
+
+# Automated Download Backup (v1.0.0)
+
+A robust, Python-based utility designed to automate the backup of files from your Downloads folder to external storage with integrity verification and disk space management.
+
+## Key Features
+* **Interactive Drive Discovery:** Uses Windows API calls to detect physical drives and allows for manual selection via a CLI menu.
+* **Integrity Verification:** Uses SHA-256 hashing to ensure files are moved correctly without corruption.
+* **Database Tracking:** SQLite-backed history prevents duplicate backups, saving time and storage.
+* **Safety First:** Includes disk space pre-checks and "Verify-Before-Delete" logic to protect your data.
+
+### Prerequisites
+* **Python 3.10 or higher**
+* **Windows OS** (Required for `ctypes` hardware discovery)
+
+## Installation
+
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/MwasProgrammer/Automated_Download_Backup.git
+    cd AutomatedDownloadBackup
+
+2. **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+
+ ## Configuration
+3. **Copy the example configuration file:**
+    ```bash
+    cp config.json.example config.json
+
+4. **Open config.json and adjust the settings:**
+    volume_label: Set to "SELECT" for interactive mode, 
+    "AUTO" for the first available drive, or 
+    a specific label like "BACKUP_USB".
+
+    BACKUP_BATCH: Number of files to process per run. (No. of files to be backed up)
+
+## Usage
+5. **Run the main script to start the backup process:**
+    ```bash
+    python main.py
+
+## Licence
+Automated Download Backup is an open-source project. Feel free to log issues or submit pull requests to improve the discovery logic or add support for additional OS platforms. See the licence details [here🔽](LICENCE).
